@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar · ClinicaMZ</title>
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap">
+  <style>
+    /* Tudo está limitado a body.entrada para vencer o estilo.css sem o alterar */
+    body.entrada{
+      --ink:#0d2b33; --teal-900:#0a3a43; --teal-700:#0e5a63; --teal-500:#14808a;
+      --mint:#bfe6df; --paper:#f3f7f6; --line:#d3e1df; --muted:#566d72;
+      --danger:#b3261e; --ok:#1d7a4d; --warn:#8a5a00;
+      --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+      --sans:Inter,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+      margin:0; min-height:100vh; background:var(--paper); color:var(--ink);
+      font-family:var(--sans); font-size:15px; line-height:1.55;
+      -webkit-font-smoothing:antialiased;
+    }
+    body.entrada *{box-sizing:border-box}
+
+    /* ===== Estrutura: painel de marca + painel do formulário ===== */
+    body.entrada .entrada-g{
+      min-height:100vh; display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+      max-width:none; margin:0; padding:0; gap:0;
+    }
+    body.entrada .entrada-t{order:1}
+    body.entrada #form-login{order:2}
+
+    /* ===== Painel de marca (esquerda) ===== */
+    body.entrada .entrada-t{
+      position:relative; overflow:hidden; display:flex; flex-direction:column;
+      justify-content:space-between; gap:32px;
+      padding:clamp(28px,5vw,64px) clamp(28px,5vw,72px) 0;
+      background-color:var(--teal-900); color:#e8f4f2;
+      /* papel milimétrico de electrocardiograma */
+      background-image:
+        linear-gradient(rgba(191,230,223,.07) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(191,230,223,.07) 1px,transparent 1px),
+        linear-gradient(rgba(191,230,223,.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(191,230,223,.04) 1px,transparent 1px);
+      background-size:80px 80px,80px 80px,16px 16px,16px 16px;
+    }
+    body.entrada .marca{display:flex;align-items:center;gap:12px;font-weight:600;font-size:18px;letter-spacing:.2px;color:#fff}
+    body.entrada .marca-ico{
+      width:38px;height:38px;border-radius:10px;background:var(--mint);color:var(--teal-900);
+      display:grid;place-items:center;flex:none;
+    }
+    body.entrada .marca-ico svg{width:22px;height:22px}
+    body.entrada .entrada-t .corpo{max-width:520px}
+    body.entrada .entrada-t h1{
+      font-family:var(--serif); font-weight:600; font-size:clamp(30px,3.6vw,46px);
+      line-height:1.12; letter-spacing:-.01em; margin:0 0 18px; color:#fff; text-wrap:balance;
+    }
+    body.entrada .entrada-t p{margin:0;color:#b9d3d0;font-size:16px;max-width:46ch}
+    body.entrada .chips{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;max-width:460px}
+    body.entrada .chips li{
+      display:flex;align-items:center;gap:10px;margin:0;padding:0;background:none;border:0;border-radius:0;
+      color:#e8f4f2;font-size:14.5px;font-weight:500;
+    }
+    body.entrada .chips .ico{width:18px;height:18px;flex:none;color:var(--mint)}
+
+    /* traço do ECG: o elemento memorável */
+    body.entrada .ecg{margin:0 calc(-1 * clamp(28px,5vw,72px));line-height:0}
+    body.entrada .ecg svg{width:100%;height:120px;display:block}
+    body.entrada .ecg path{
+      fill:none;stroke:var(--mint);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+      stroke-dasharray:1;stroke-dashoffset:0;
+      animation:ecg-desenhar 2.4s cubic-bezier(.4,0,.2,1) .3s both;
+    }
+    @keyframes ecg-desenhar{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+
+    /* ===== Cartão do formulário (direita) ===== */
+    body.entrada #form-login{
+      align-self:center; justify-self:center; width:min(440px,100% - 48px);
+      margin:clamp(32px,6vw,72px) 0; padding:0; background:transparent; border:0; box-shadow:none;
+    }
+    body.entrada #form-login header{margin:0 0 28px;padding:0;border:0;display:block;background:none}
+    body.entrada #form-login header h2{
+      font-family:var(--serif);font-weight:600;font-size:30px;line-height:1.2;margin:0 0 6px;color:var(--ink);letter-spacing:-.01em;
+    }
+    body.entrada #form-login header .small{color:var(--muted);font-size:15px}
+
+    body.entrada .fila{display:grid;grid-template-columns:1fr;gap:18px;margin:0}
+    body.entrada .campo{display:flex;flex-direction:column;gap:7px;margin:0;width:auto;font-weight:600;font-size:14px;color:var(--ink)}
+    body.entrada .campo input{
+      width:100%;height:48px;padding:0 14px;margin:0;font:inherit;font-weight:400;font-size:15px;color:var(--ink);
+      background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:none;
+      transition:border-color .15s,box-shadow .15s;
+    }
+    body.entrada .campo input:hover{border-color:#a9c3c0}
+    body.entrada .campo input:focus{outline:none;border-color:var(--teal-500);box-shadow:0 0 0 4px rgba(20,128,138,.18)}
+    body.entrada .campo input:user-invalid{border-color:var(--danger)}
+    body.entrada .pw{position:relative}
+    body.entrada .pw input{padding-right:48px}
+    body.entrada .ver{
+      position:absolute;right:4px;top:4px;width:40px;height:40px;display:grid;place-items:center;
+      background:none;border:0;border-radius:8px;color:var(--muted);cursor:pointer;padding:0;
+    }
+    body.entrada .ver:hover{color:var(--ink);background:#eef4f3}
+    body.entrada .ver:focus-visible{outline:2px solid var(--teal-500);outline-offset:1px}
+    body.entrada .ver svg{width:20px;height:20px}
+
+    /* mensagens devolvidas por login.js (erro, bloqueio, etc.) */
+    body.entrada #mensagens{margin:0 0 18px}
+    body.entrada #mensagens:empty{display:none}
+    body.entrada #mensagens > *{
+      margin:0 0 8px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.45;
+      background:#fdeceb;color:#7d1a14;border:1px solid #f3c4c0;
+    }
+    body.entrada #mensagens .ok,body.entrada #mensagens .sucesso{background:#e7f5ed;color:#14573a;border-color:#b7dfc8}
+    body.entrada #mensagens .aviso{background:#fff4de;color:#6b4500;border-color:#f0d9a3}
+
+    body.entrada .nota{
+      display:flex;gap:10px;margin:20px 0 0;padding:12px 14px;border-radius:10px;
+      background:#e9f1f0;color:var(--muted);font-size:13.5px;line-height:1.5;
+    }
+    body.entrada .nota svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--teal-700)}
+    body.entrada .nota p{margin:0}
+
+    body.entrada #form-login footer.acc{margin:22px 0 0;padding:0;border:0;background:none;display:block}
+    body.entrada .tb.prim{
+      width:100%;height:50px;display:flex;align-items:center;justify-content:center;gap:10px;
+      font:inherit;font-weight:600;font-size:15.5px;color:#fff;background:var(--teal-700);
+      border:0;border-radius:10px;cursor:pointer;box-shadow:none;transition:background .15s,transform .05s;
+    }
+    body.entrada .tb.prim:hover{background:var(--teal-900)}
+    body.entrada .tb.prim:active{transform:translateY(1px)}
+    body.entrada .tb.prim:focus-visible{outline:3px solid rgba(20,128,138,.45);outline-offset:2px}
+    body.entrada .tb.prim[disabled]{opacity:.65;cursor:progress}
+    body.entrada .tb.prim .ico{width:20px;height:20px}
+
+
+    /* ===== Ecrãs pequenos: o painel de marca passa a faixa no topo ===== */
+    @media (max-width:900px){
+      body.entrada .entrada-g{grid-template-columns:1fr}
+      body.entrada .entrada-t{order:1;padding-bottom:0;gap:20px}
+      body.entrada .entrada-t .corpo p,body.entrada .chips{display:none}
+      body.entrada .entrada-t h1{font-size:26px;margin:0}
+      body.entrada .ecg svg{height:72px}
+      body.entrada #form-login{order:2;margin:32px 0 48px}
+    }
+    @media (prefers-reduced-motion:reduce){
+      body.entrada .ecg path{animation:none}
+      body.entrada *{transition:none!important}
+    }
+  </style>
+</head>
+<body class="entrada">
+<div class="entrada-g">
+
+  <form class="card" id="form-login" autocomplete="off">
+    <header>
+      <h2>Entrar no sistema</h2>
+      <span class="small">Use a conta do seu perfil de acesso.</span>
+    </header>
+
+    <div id="mensagens" role="alert" aria-live="polite"></div>
+
+    <div class="fila">
+      <label class="campo s12">E-mail
+        <input type="email" name="email" placeholder="nome@clinica.co.mz" required autofocus>
+      </label>
+      <label class="campo s12">Palavra-passe
+        <span class="pw">
+          <input type="password" name="palavra_passe" placeholder="A sua palavra-passe" required>
+          <button class="ver" type="button" id="ver-pw" aria-label="Mostrar palavra-passe" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </span>
+      </label>
+    </div>
+
+    <div class="nota">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+      <p>A conta bloqueia após 5 tentativas falhadas e a sessão bloqueia após 2 minutos sem actividade.</p>
+    </div>
+
+    <footer class="acc">
+      <button class="tb prim" type="submit">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4h9v16h-9"/><path d="M4 12h11"/><path d="M11 8l4 4-4 4"/></svg>
+        Entrar
+      </button>
+    </footer>
+
+    <span id="estado-bd" hidden></span>
+  </form>
+
+  <section class="entrada-t">
+    <div class="marca">
+      <span class="marca-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      </span>
+      ClinicaMZ
+    </div>
+
+    <div class="corpo">
+      <h1>O centro médico inteiro, num só sistema.</h1>
+      <p>Recepção, triagem, consulta, laboratório, farmácia e facturação ligados entre si, com rasto de auditoria de cada acção.</p>
+      <ul class="chips">
+        <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>Agenda e marcações</li>
+        <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>Triagem e consulta</li>
+        <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>Receitas e stock</li>
+        <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>Facturas e pagamentos</li>
+      </ul>
+    </div>
+
+    <div class="ecg" aria-hidden="true">
+      <svg viewBox="0 0 600 120" preserveAspectRatio="none">
+        <path pathLength="1" d="M0 70 H110 l12 -9 l12 9 H190 l10 9 l14 -62 l16 86 l12 -33 H300 l14 -13 l16 13 H470 l10 -7 l10 7 H600"/>
+      </svg>
+    </div>
+  </section>
+
+</div>
+
+<script src="js/dados_iniciais.js"></script>
+<script src="js/db.js"></script>
+<script src="js/util.js"></script>
+<script src="js/seguranca.js"></script>
+<script src="js/repositorio.js"></script>
+<script src="js/servicos.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/paginas/login.js"></script>
+<script>
+  // Mostrar / esconder a palavra-passe
+  (function(){
+    var b=document.getElementById('ver-pw'),i=document.querySelector('input[name="palavra_passe"]');
+    if(!b||!i)return;
+    b.addEventListener('click',function(){
+      var mostrar=i.type==='password';
+      i.type=mostrar?'text':'password';
+      b.setAttribute('aria-pressed',mostrar);
+      b.setAttribute('aria-label',mostrar?'Esconder palavra-passe':'Mostrar palavra-passe');
+    });
+  })();
+</script>
+</body>
+</html>
